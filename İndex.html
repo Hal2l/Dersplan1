@@ -1,0 +1,3810 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DersPlan</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f6fb;
+    color:#172033;
+}
+
+button,input{font:inherit}
+
+.auth{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:linear-gradient(135deg,#172033,#3157d5);
+}
+
+.auth-box{
+    width:100%;
+    max-width:420px;
+    background:white;
+    border-radius:20px;
+    padding:28px;
+    box-shadow:0 20px 50px #0003;
+}
+
+.logo{
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+    color:#3157d5;
+    margin-bottom:8px;
+}
+
+.auth-sub{
+    text-align:center;
+    color:#667085;
+    margin-bottom:25px;
+}
+
+.auth input{
+    width:100%;
+    padding:14px;
+    border:1px solid #d9deea;
+    border-radius:10px;
+    margin-bottom:12px;
+    outline:none;
+}
+
+.primary,
+.secondary,
+.create-btn,
+.delete-btn,
+.test-btn{
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    width:100%;
+    border:0;
+    padding:14px;
+    border-radius:10px;
+    background:#3157d5;
+    color:white;
+}
+
+.secondary{
+    width:100%;
+    border:1px solid #3157d5;
+    padding:12px;
+    border-radius:10px;
+    background:white;
+    color:#3157d5;
+    margin-top:10px;
+}
+
+.app{
+    display:none;
+    min-height:100vh;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:230px;
+    background:#172033;
+    color:white;
+    padding:20px 14px;
+    z-index:5;
+}
+
+.side-logo{
+    font-size:25px;
+    font-weight:bold;
+    padding:10px;
+    margin-bottom:20px;
+}
+
+.nav button{
+    width:100%;
+    background:transparent;
+    border:0;
+    color:#cbd2e1;
+    text-align:left;
+    padding:13px 12px;
+    border-radius:9px;
+    margin-bottom:5px;
+    cursor:pointer;
+}
+
+.nav button.active,
+.nav button:hover{
+    background:#3157d5;
+    color:white;
+}
+
+.logout{
+    position:absolute;
+    bottom:20px;
+    left:14px;
+    width:calc(100% - 28px);
+    padding:12px;
+    border:0;
+    border-radius:9px;
+    background:#273149;
+    color:white;
+    cursor:pointer;
+}
+
+.main{
+    margin-left:230px;
+    padding:25px;
+}
+
+.topbar{
+    background:white;
+    border-radius:15px;
+    padding:18px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.topbar h1{
+    margin:0;
+    font-size:24px;
+}
+
+.user-name{
+    color:#667085;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:18px;
+    box-shadow:0 3px 15px #00000008;
+}
+
+.card h2,
+.card h3{
+    margin-top:0;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:15px;
+}
+
+.option-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:10px;
+}
+
+.option{
+    border:1px solid #dce1ec;
+    background:white;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.option.selected{
+    background:#3157d5;
+    color:white;
+    border-color:#3157d5;
+}
+
+.day{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:11px 15px;
+    border:1px solid #dce1ec;
+    border-radius:9px;
+    margin:5px;
+    cursor:pointer;
+}
+
+.day.selected{
+    background:#3157d5;
+    color:white;
+}
+
+.create-btn{
+    width:100%;
+    padding:16px;
+    border:0;
+    border-radius:12px;
+    background:#16a34a;
+    color:white;
+    margin-top:15px;
+}
+
+.delete-btn{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:12px;
+    background:#dc2626;
+    color:white;
+    margin-top:10px;
+}
+
+.program-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.week-badge{
+    background:#e8edff;
+    color:#3157d5;
+    padding:9px 13px;
+    border-radius:20px;
+    font-weight:bold;
+}
+
+.program{
+    border:1px solid #e1e5ee;
+    border-radius:13px;
+    padding:17px;
+    margin-bottom:14px;
+}
+
+.program.completed-topic{
+    border-left:5px solid #16a34a;
+}
+
+.program.failed-topic{
+    border-left:5px solid #dc2626;
+}
+
+.program.review-topic{
+    border-left:5px solid #eab308;
+}
+
+.program-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.program-title{
+    font-weight:bold;
+    font-size:18px;
+}
+
+.topic{
+    color:#3157d5;
+    font-weight:bold;
+    margin:8px 0;
+}
+
+.tag{
+    display:inline-block;
+    background:#eef1f7;
+    padding:5px 8px;
+    border-radius:6px;
+    font-size:12px;
+    margin-right:5px;
+}
+
+.task{
+    border:1px solid #e1e5ee;
+    border-radius:10px;
+    padding:13px;
+    margin-top:10px;
+}
+
+.task.done{
+    background:#effaf2;
+    border-color:#86d89b;
+}
+
+.task-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+}
+
+.task input{
+    width:20px;
+    height:20px;
+}
+
+.task-title{
+    font-weight:bold;
+}
+
+.task-info{
+    font-size:13px;
+    color:#667085;
+    margin-top:4px;
+}
+
+.test-box{
+    margin-top:12px;
+    background:#f8f9fc;
+    border-radius:10px;
+    padding:14px;
+}
+
+.test-inputs{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+}
+
+.test-inputs input{
+    width:100%;
+    padding:10px;
+    border:1px solid #d9deea;
+    border-radius:8px;
+}
+
+.test-btn{
+    margin-top:10px;
+    width:100%;
+    padding:10px;
+    border:0;
+    border-radius:8px;
+    background:#3157d5;
+    color:white;
+}
+
+.analysis{
+    margin-top:10px;
+    padding:11px;
+    border-radius:8px;
+    background:#fff;
+}
+
+.good{
+    border-left:4px solid #16a34a;
+}
+
+.medium{
+    border-left:4px solid #eab308;
+}
+
+.bad{
+    border-left:4px solid #dc2626;
+}
+
+.progress-bar{
+    height:15px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.progress-fill{
+    height:100%;
+    background:#3157d5;
+    width:0%;
+    transition:.3s;
+}
+
+.stat{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    text-align:center;
+}
+
+.stat-number{
+    font-size:28px;
+    font-weight:bold;
+    color:#3157d5;
+}
+
+.empty{
+    text-align:center;
+    padding:35px;
+    color:#667085;
+}
+
+.next-week{
+    background:linear-gradient(135deg,#3157d5,#5b7cff);
+    color:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:18px;
+}
+
+.notice{
+    padding:12px;
+    border-radius:9px;
+    margin-top:10px;
+    background:#f8f9fc;
+}
+
+@media(max-width:750px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .side-logo{
+        text-align:center;
+    }
+
+    .logout{
+        position:relative;
+        left:auto;
+        bottom:auto;
+        width:100%;
+        margin-top:10px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:14px;
+    }
+
+    .nav{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:5px;
+    }
+
+    .topbar{
+        padding:14px;
+    }
+
+    .test-inputs{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="auth" id="authScreen">
+
+    <div class="auth-box">
+
+        <div class="logo">📚 DersPlan</div>
+
+        <div class="auth-sub">
+            Akıllı çalışma programın
+        </div>
+
+        <div id="registerArea">
+
+            <input id="regName" placeholder="Ad Soyad">
+
+            <input id="regUser" placeholder="Kullanıcı adı">
+
+            <input id="regPass" type="password" placeholder="Şifre">
+
+            <button class="primary" onclick="register()">
+                Kayıt Ol
+            </button>
+
+            <button class="secondary" onclick="showLogin()">
+                Zaten hesabım var
+            </button>
+
+        </div>
+
+        <div id="loginArea" style="display:none">
+
+            <input id="loginUser" placeholder="Kullanıcı adı">
+
+            <input id="loginPass" type="password" placeholder="Şifre">
+
+            <button class="primary" onclick="login()">
+                Giriş Yap
+            </button>
+
+            <button class="secondary" onclick="showRegister()">
+                Hesap oluştur
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="app" id="app">
+
+    <aside class="sidebar">
+
+        <div class="side-logo">
+            📚 DersPlan
+        </div>
+
+        <div class="nav">
+
+            <button onclick="showPage('home')" class="active" id="nav-home">
+                🏠 Ana Sayfa
+            </button>
+
+            <button onclick="showPage('lessons')" id="nav-lessons">
+                📚 Dersler
+            </button>
+
+            <button onclick="showPage('daily')" id="nav-daily">
+                ☀️ Günlük Program
+            </button>
+
+            <button onclick="showPage('weekly')" id="nav-weekly">
+                📅 Haftalık Program
+            </button>
+
+            <button onclick="showPage('progress')" id="nav-progress">
+                📊 İlerleme
+            </button>
+
+            <button onclick="showPage('ranking')" id="nav-ranking">
+                🏆 Sıralama
+            </button>
+
+        </div>
+
+        <button class="logout" onclick="logout()">
+            Çıkış Yap
+        </button>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <h1 id="pageTitle">
+                Ana Sayfa
+            </h1>
+
+            <div class="user-name" id="userName"></div>
+
+        </div>
+
+
+        <section class="page active" id="page-home">
+
+            <div class="grid">
+
+                <div class="stat">
+                    <div>⭐ XP</div>
+                    <div class="stat-number" id="homeXP">0</div>
+                </div>
+
+                <div class="stat">
+                    <div>🔥 Seri</div>
+                    <div class="stat-number" id="homeStreak">0</div>
+                </div>
+
+                <div class="stat">
+                    <div>📅 Hafta</div>
+                    <div class="stat-number" id="homeWeek">0</div>
+                </div>
+
+                <div class="stat">
+                    <div>🎯 Tamamlanan Konu</div>
+                    <div class="stat-number" id="homeTopics">0</div>
+                </div>
+
+            </div>
+
+            <div class="card" style="margin-top:18px">
+
+                <h2>☀️ Bugünün Programı</h2>
+
+                <div id="homeToday"></div>
+
+            </div>
+
+            <div class="card">
+
+                <h2>🧠 Sistem Analizi</h2>
+
+                <div id="homeAnalysis">
+                    Henüz test sonucu yok.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="page" id="page-lessons">
+
+            <div class="card">
+
+                <h2>🎯 Sınav</h2>
+
+                <div class="option-grid">
+
+                    <button class="option"
+                            id="exam-YKS"
+                            onclick="selectExam('YKS')">
+                        YKS
+                    </button>
+
+                    <button class="option"
+                            id="exam-KPSS"
+                            onclick="selectExam('KPSS')">
+                        KPSS
+                    </button>
+
+                    <button class="option"
+                            id="exam-BOTH"
+                            onclick="selectExam('YKS+KPSS')">
+                        YKS + KPSS
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card" id="fieldCard">
+
+                <h2>🎓 Alan</h2>
+
+                <div class="option-grid">
+
+                    <button class="option"
+                            id="field-EA"
+                            onclick="selectField('EA')">
+                        Eşit Ağırlık
+                    </button>
+
+                    <button class="option"
+                            id="field-SAY"
+                            onclick="selectField('SAY')">
+                        Sayısal
+                    </button>
+
+                    <button class="option"
+                            id="field-SOZ"
+                            onclick="selectField('SOZ')">
+                        Sözel
+                    </button>
+
+                    <button class="option"
+                            id="field-DIL"
+                            onclick="selectField('DIL')">
+                        Dil
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>🏫 Sınıf</h2>
+
+                <button class="secondary"
+                        onclick="selectAllClasses()">
+                    Hepsini Seç
+                </button>
+
+                <div class="option-grid" id="classes"></div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>📚 Dersler</h2>
+
+                <button class="secondary"
+                        onclick="selectAllSubjects()">
+                    Hepsini Seç
+                </button>
+
+                <div class="option-grid" id="subjects"></div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>📅 Çalışma Günleri</h2>
+
+                <div id="days"></div>
+
+            </div>
+
+
+            <button class="create-btn"
+                    onclick="createProgram()">
+                🚀 Haftalık Programı Oluştur
+            </button>
+
+
+            <button class="delete-btn"
+                    onclick="deleteProgramAndReset()">
+                🗑️ Programı Sil ve Sıfırla
+            </button>
+
+        </section>
+
+
+        <section class="page" id="page-daily">
+
+            <div class="card">
+
+                <h2>☀️ Bugünkü Dersler</h2>
+
+                <div id="dailyContent"></div>
+
+            </div>
+
+        </section>
+
+
+        <section class="page" id="page-weekly">
+
+            <div class="next-week"
+                 id="weekStatus"></div>
+
+            <div class="card">
+
+                <div class="program-header">
+
+                    <h2>📅 Haftalık Program</h2>
+
+                    <span class="week-badge"
+                          id="weekBadge">
+                        Hafta 0
+                    </span>
+
+                </div>
+
+                <div id="weeklyContent"></div>
+
+            </div>
+
+
+            <button class="delete-btn"
+                    onclick="deleteProgramAndReset()">
+                🗑️ Programı Sil ve Sıfırla
+            </button>
+
+        </section>
+
+
+        <section class="page" id="page-progress">
+
+            <div class="grid">
+
+                <div class="stat">
+                    <div>⭐ XP</div>
+                    <div class="stat-number"
+                         id="progressXP">
+                        0
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div>🎯 Konular</div>
+                    <div class="stat-number"
+                         id="progressTopics">
+                        0
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <div>📝 Test Sayısı</div>
+                    <div class="stat-number"
+                         id="progressTests">
+                        0
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="card"
+                 style="margin-top:18px">
+
+                <h2>📊 Bu Haftanın İlerlemesi</h2>
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                         id="progressFill">
+                    </div>
+
+                </div>
+
+                <strong id="progressText">
+                    %0
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>🧠 Ders Konu İlerlemesi</h2>
+
+                <div id="subjectProgress"></div>
+
+            </div>
+
+        </section>
+
+
+        <section class="page" id="page-ranking">
+
+            <div class="card">
+
+                <h2>🏆 Sıralama</h2>
+
+                <div id="rankingContent"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   MÜFREDAT
+========================================================= */
+
+const curriculum = {
+
+9:{
+"Matematik":[
+"Sayılar",
+"Nicelikler ve Değişimler",
+"Geometrik Şekiller",
+"Eşlik ve Benzerlik",
+"Algoritma ve Bilişim",
+"İstatistiksel Araştırma Süreci",
+"Veriden Olasılığa"
+],
+
+"Fizik":[
+"Fizik Bilimi ve Kariyer Keşfi",
+"Kuvvet ve Hareket",
+"Akışkanlar",
+"Enerji",
+"Elektrik",
+"Dalgalar"
+],
+
+"Kimya":[
+"Etkileşim",
+"Çeşitlilik",
+"Kimyasal Türler",
+"Kimyanın Temelleri",
+"Kimya ve Sürdürülebilirlik"
+],
+
+"Biyoloji":[
+"Yaşam",
+"Organizasyon",
+"Ekoloji",
+"Genetik"
+],
+
+"Türk Dili ve Edebiyatı":[
+"Okuma",
+"Dinleme",
+"Konuşma",
+"Yazma",
+"Şiir",
+"Hikâye",
+"Roman",
+"Tiyatro"
+],
+
+"Tarih":[
+"Tarih Bilimi",
+"İlk Çağ Medeniyetleri",
+"İlk Türk Devletleri",
+"İslam Medeniyeti",
+"Türk-İslam Devletleri"
+],
+
+"Coğrafya":[
+"Doğal Sistemler",
+"Beşeri Sistemler",
+"Ekonomik Faaliyetler",
+"Afetler"
+],
+
+"Felsefe":[
+"Felsefeyi Tanıma",
+"Felsefi Düşünce",
+"Bilgi Felsefesi",
+"Bilim Felsefesi",
+"Ahlak Felsefesi"
+],
+
+"Din Kültürü":[
+"Bilgi ve İnanç",
+"İslam ve İbadet",
+"Ahlak ve Değerler",
+"Allah-İnsan İlişkisi"
+],
+
+"İngilizce":[
+"School Life",
+"Classroom Life",
+"Personal Life",
+"Family Life",
+"Daily Life"
+]
+},
+
+10:{
+"Matematik":[
+"Geometrik Şekiller",
+"İstatistik",
+"Sayma ve Olasılık",
+"Fonksiyonlar",
+"Nicelikler ve Değişimler",
+"Algoritma ve Bilişim"
+],
+
+"Fizik":[
+"Kuvvet ve Hareket",
+"Elektrik",
+"Dalgalar",
+"Optik",
+"Enerji"
+],
+
+"Kimya":[
+"Kimyasal Etkileşimler",
+"Gazlar",
+"Çözeltiler",
+"Kimyasal Tepkimeler",
+"Kimya ve Elektrik"
+],
+
+"Biyoloji":[
+"Enerji",
+"Ekoloji",
+"Genetik",
+"Canlılarda Enerji Dönüşümleri"
+],
+
+"Türk Dili ve Edebiyatı":[
+"Hikâye",
+"Şiir",
+"Destan",
+"Roman",
+"Tiyatro",
+"Makale",
+"Sohbet",
+"Deneme"
+],
+
+"Tarih":[
+"Osmanlı Devleti",
+"Osmanlı Kültür ve Medeniyeti",
+"Avrupa ve Osmanlı",
+"Modernleşme"
+],
+
+"Coğrafya":[
+"Doğal Sistemler",
+"Beşeri Sistemler",
+"Ekonomik Sistemler",
+"Afetler"
+],
+
+"Felsefe":[
+"Felsefeyi Tanıma",
+"Bilgi Felsefesi",
+"Bilim Felsefesi",
+"Ahlak Felsefesi",
+"Sanat Felsefesi"
+],
+
+"Din Kültürü":[
+"Allah-İnsan İlişkisi",
+"Kur'an ve Yorumu",
+"İslam ve İbadet",
+"Ahlak"
+],
+
+"İngilizce":[
+"School Life",
+"Plans",
+"Legendary Figures",
+"Traditions",
+"Travel"
+]
+},
+
+11:{
+"Matematik":[
+"Nicelikler ve Değişimler",
+"Geometrik Şekiller",
+"İstatistik",
+"Algoritma ve Bilişim",
+"Veriden Olasılığa"
+],
+
+"Fizik":[
+"Kuvvet ve Hareket",
+"Elektrik ve Manyetizma",
+"Madde ve Doğası",
+"Dalgalar",
+"Optik"
+],
+
+"Kimya":[
+"Etkileşim",
+"Çeşitlilik",
+"Çözünürlük",
+"Enerji",
+"Denge"
+],
+
+"Biyoloji":[
+"İnsan Fizyolojisi",
+"Genetik",
+"Ekoloji",
+"Canlılarda Enerji Dönüşümleri"
+],
+
+"Türk Dili ve Edebiyatı":[
+"Şiir",
+"Hikâye",
+"Roman",
+"Tiyatro",
+"Makale",
+"Eleştiri",
+"Söylev"
+],
+
+"Tarih":[
+"Osmanlı Siyaseti",
+"Osmanlı Toplumu",
+"Değişim ve Diplomasi",
+"20. Yüzyıl Başlarında Dünya"
+],
+
+"Coğrafya":[
+"Doğal Sistemler",
+"Beşeri Sistemler",
+"Ekonomik Sistemler",
+"Türkiye Coğrafyası"
+],
+
+"Felsefe":[
+"Felsefi Düşünce",
+"Bilgi Felsefesi",
+"Bilim Felsefesi",
+"Varlık Felsefesi",
+"Ahlak Felsefesi",
+"Din Felsefesi"
+],
+
+"Din Kültürü":[
+"Dünya ve Ahiret",
+"Kur'an'a Göre Hz. Muhammed",
+"İslam Düşüncesinde Yorumlar",
+"İslam ve Bilim"
+],
+
+"İngilizce":[
+"Future Jobs",
+"Open Your Heart",
+"Hard Times",
+"What a Life",
+"Back to the Past"
+]
+},
+
+12:{
+"Matematik":[
+"Nicelikler ve Değişimler",
+"Üstel ve Logaritmik Fonksiyonlar",
+"Diziler",
+"Trigonometri",
+"Analitik Geometri",
+"Çember",
+"Geometrik Cisimler",
+"Limit",
+"Türev",
+"İntegral",
+"İstatistik"
+],
+
+"Fizik":[
+"Elektrik ve Manyetizma",
+"Çembersel Hareket",
+"Basit Harmonik Hareket",
+"Dalgalar",
+"Atom Fiziği",
+"Nükleer Fizik",
+"Modern Fizik"
+],
+
+"Kimya":[
+"Kimyasal Denge",
+"Asit-Baz Dengesi",
+"Çözünürlük Dengesi",
+"Elektrokimya",
+"Organik Kimya",
+"Enerji"
+],
+
+"Biyoloji":[
+"Genetik",
+"Ekoloji",
+"Canlılarda Enerji Dönüşümleri",
+"Bitki Biyolojisi",
+"Hayvan Biyolojisi",
+"Evrim"
+],
+
+"Türk Dili ve Edebiyatı":[
+"Cumhuriyet Dönemi Edebiyatı",
+"Şiir",
+"Roman",
+"Hikâye",
+"Tiyatro",
+"Deneme",
+"Eleştiri"
+],
+
+"Tarih":[
+"20. Yüzyıl Başlarında Osmanlı",
+"Millî Mücadele",
+"Atatürk Dönemi",
+"İkinci Dünya Savaşı",
+"Soğuk Savaş",
+"Türkiye ve Dünya"
+],
+
+"Coğrafya":[
+"Türkiye'nin Ekonomik Coğrafyası",
+"Küresel Çevre Sorunları",
+"Türkiye'nin Jeopolitiği",
+"Şehirler ve Ekonomik Faaliyetler"
+],
+
+"Felsefe":[
+"Felsefi Düşünce",
+"Bilgi Felsefesi",
+"Bilim Felsefesi",
+"Varlık Felsefesi",
+"Ahlak Felsefesi",
+"Din Felsefesi"
+],
+
+"Din Kültürü":[
+"İslam ve Bilim",
+"İslam Düşüncesinde Yorumlar",
+"İslam Ahlakı",
+"Yaşayan Dinler"
+],
+
+"İngilizce":[
+"Family Life",
+"Open Your Heart",
+"Back to the Past",
+"Coming Soon",
+"Modern Heroes"
+]
+}
+
+};
+
+
+const kpss = {
+
+"Türkçe":[
+"Sözcükte Anlam",
+"Cümlede Anlam",
+"Paragraf",
+"Ses Bilgisi",
+"Yazım Kuralları",
+"Noktalama",
+"Dil Bilgisi"
+],
+
+"Matematik":[
+"Temel Kavramlar",
+"Sayılar",
+"Bölme ve Bölünebilme",
+"Rasyonel Sayılar",
+"Üslü Sayılar",
+"Köklü Sayılar",
+"Oran-Orantı",
+"Problemler",
+"Geometri"
+],
+
+"Tarih":[
+"İslamiyet Öncesi Türk Tarihi",
+"İlk Türk-İslam Devletleri",
+"Osmanlı Tarihi",
+"Osmanlı Kültür ve Medeniyeti",
+"Kurtuluş Savaşı",
+"Atatürk İlke ve İnkılapları",
+"Çağdaş Türk ve Dünya Tarihi"
+],
+
+"Coğrafya":[
+"Türkiye'nin Coğrafi Konumu",
+"İklim",
+"Yeryüzü Şekilleri",
+"Nüfus",
+"Tarım",
+"Sanayi",
+"Ulaşım",
+"Turizm"
+],
+
+"Vatandaşlık":[
+"Hukukun Temel Kavramları",
+"Anayasa",
+"Temel Hak ve Özgürlükler",
+"Yasama",
+"Yürütme",
+"Yargı",
+"İdare"
+],
+
+"Güncel Bilgiler":[
+"Türkiye Gündemi",
+"Dünya Gündemi",
+"Bilim",
+"Kültür",
+"Sanat",
+"Spor"
+]
+
+};
+
+
+const fields = {
+
+EA:[
+"Matematik",
+"Türk Dili ve Edebiyatı",
+"Tarih",
+"Coğrafya",
+"Felsefe",
+"Din Kültürü"
+],
+
+SAY:[
+"Matematik",
+"Fizik",
+"Kimya",
+"Biyoloji"
+],
+
+SOZ:[
+"Türk Dili ve Edebiyatı",
+"Tarih",
+"Coğrafya",
+"Felsefe",
+"Din Kültürü"
+],
+
+DIL:[
+"Türk Dili ve Edebiyatı",
+"Matematik",
+"Tarih",
+"Coğrafya"
+]
+
+};
+
+
+const dayNames = [
+"Pazartesi",
+"Salı",
+"Çarşamba",
+"Perşembe",
+"Cuma",
+"Cumartesi",
+"Pazar"
+];
+
+
+/* =========================================================
+   DURUM
+========================================================= */
+
+function defaultState(){
+
+    return {
+
+        exam:"YKS",
+
+        field:"EA",
+
+        classes:[9,10,11,12],
+
+        subjects:[],
+
+        days:[0,1,2,3,4,5,6],
+
+        program:[],
+
+        xp:0,
+
+        streak:0,
+
+        week:0,
+
+        completedTopics:0,
+
+        tests:[],
+
+        created:false,
+
+        lastStudyDate:null,
+
+        lastActivityDate:null,
+
+        topicProgress:{},
+
+        subjectProgress:{}
+
+    };
+
+}
+
+
+let state = defaultState();
+
+let currentUser = null;
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function userKey(){
+
+    return "dersplan_user_" + currentUser;
+
+}
+
+
+function saveState(){
+
+    if(!currentUser) return;
+
+    localStorage.setItem(
+        userKey(),
+        JSON.stringify(state)
+    );
+
+}
+
+
+function loadState(){
+
+    if(!currentUser) return;
+
+    const saved =
+        localStorage.getItem(userKey());
+
+    if(saved){
+
+        try{
+
+            state = {
+                ...defaultState(),
+                ...JSON.parse(saved)
+            };
+
+        }catch(e){
+
+            state = defaultState();
+
+        }
+
+    }else{
+
+        state = defaultState();
+
+    }
+
+}
+
+
+/* =========================================================
+   KAYIT / GİRİŞ
+========================================================= */
+
+function showLogin(){
+
+    document.getElementById("registerArea")
+        .style.display="none";
+
+    document.getElementById("loginArea")
+        .style.display="block";
+
+}
+
+
+function showRegister(){
+
+    document.getElementById("registerArea")
+        .style.display="block";
+
+    document.getElementById("loginArea")
+        .style.display="none";
+
+}
+
+
+function register(){
+
+    const name =
+        document.getElementById("regName")
+        .value.trim();
+
+    const username =
+        document.getElementById("regUser")
+        .value.trim();
+
+    const password =
+        document.getElementById("regPass")
+        .value;
+
+    if(!name || !username || !password){
+
+        alert("Lütfen bütün alanları doldur.");
+
+        return;
+
+    }
+
+    const users =
+        JSON.parse(
+            localStorage.getItem("dersplan_users") || "{}"
+        );
+
+    if(users[username]){
+
+        alert("Bu kullanıcı adı zaten kullanılıyor.");
+
+        return;
+
+    }
+
+    users[username] = {
+
+        name:name,
+
+        password:password
+
+    };
+
+    localStorage.setItem(
+        "dersplan_users",
+        JSON.stringify(users)
+    );
+
+    alert("Kayıt başarılı. Şimdi giriş yapabilirsin.");
+
+    document.getElementById("loginUser").value=username;
+
+    showLogin();
+
+}
+
+
+function login(){
+
+    const username =
+        document.getElementById("loginUser")
+        .value.trim();
+
+    const password =
+        document.getElementById("loginPass")
+        .value;
+
+    if(!username || !password){
+
+        alert("Kullanıcı adı ve şifreyi gir.");
+
+        return;
+
+    }
+
+    const users =
+        JSON.parse(
+            localStorage.getItem("dersplan_users") || "{}"
+        );
+
+    if(!users[username] ||
+       users[username].password !== password){
+
+        alert("Kullanıcı adı veya şifre yanlış.");
+
+        return;
+
+    }
+
+    currentUser = username;
+
+    loadState();
+
+    document.getElementById("authScreen")
+        .style.display="none";
+
+    document.getElementById("app")
+        .style.display="block";
+
+    document.getElementById("userName")
+        .textContent=users[username].name;
+
+    initializeUI();
+
+    updateAll();
+
+}
+
+
+function logout(){
+
+    saveState();
+
+    currentUser=null;
+
+    document.getElementById("app")
+        .style.display="none";
+
+    document.getElementById("authScreen")
+        .style.display="flex";
+
+    document.getElementById("loginPass").value="";
+
+}
+
+
+/* =========================================================
+   SAYFA
+========================================================= */
+
+const pageTitles = {
+
+    home:"Ana Sayfa",
+    lessons:"Dersler",
+    daily:"Günlük Program",
+    weekly:"Haftalık Program",
+    progress:"İlerleme",
+    ranking:"Sıralama"
+
+};
+
+
+function showPage(page){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(p=>p.classList.remove("active"));
+
+    document
+        .getElementById("page-"+page)
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(b=>b.classList.remove("active"));
+
+    const nav =
+        document.getElementById("nav-"+page);
+
+    if(nav) nav.classList.add("active");
+
+    document.getElementById("pageTitle")
+        .textContent=pageTitles[page];
+
+    updateAll();
+
+}
+
+
+/* =========================================================
+   SINAV
+========================================================= */
+
+function selectExam(exam){
+
+    state.exam=exam;
+
+    if(exam==="KPSS"){
+
+        state.subjects = Object.keys(kpss);
+
+        document.getElementById("fieldCard")
+            .style.display="none";
+
+        document.getElementById("classes")
+            .innerHTML="";
+
+    }else{
+
+        document.getElementById("fieldCard")
+            .style.display="block";
+
+        if(!state.subjects.length){
+
+            state.subjects =
+                [...fields[state.field]];
+
+        }
+
+        renderClasses();
+
+    }
+
+    renderSubjects();
+
+    updateSelections();
+
+    saveState();
+
+}
+
+
+function selectField(field){
+
+    state.field=field;
+
+    state.subjects =
+        [...fields[field]];
+
+    renderSubjects();
+
+    updateSelections();
+
+    saveState();
+
+}
+
+
+/* =========================================================
+   SINIF
+========================================================= */
+
+function renderClasses(){
+
+    const container =
+        document.getElementById("classes");
+
+    if(state.exam==="KPSS"){
+
+        container.innerHTML="";
+
+        return;
+
+    }
+
+    container.innerHTML="";
+
+    [9,10,11,12].forEach(cls=>{
+
+        const button =
+            document.createElement("button");
+
+        button.className="option";
+
+        button.textContent=cls+". Sınıf";
+
+        button.id="class-"+cls;
+
+        button.onclick=()=>{
+
+            if(state.classes.includes(cls)){
+
+                state.classes =
+                    state.classes.filter(x=>x!==cls);
+
+            }else{
+
+                state.classes.push(cls);
+
+            }
+
+            renderClasses();
+
+            renderSubjects();
+
+            saveState();
+
+        };
+
+        if(state.classes.includes(cls)){
+
+            button.classList.add("selected");
+
+        }
+
+        container.appendChild(button);
+
+    });
+
+}
+
+
+function selectAllClasses(){
+
+    if(state.classes.length===4){
+
+        state.classes=[];
+
+    }else{
+
+        state.classes=[9,10,11,12];
+
+    }
+
+    renderClasses();
+
+    renderSubjects();
+
+    saveState();
+
+}
+
+
+/* =========================================================
+   DERSLER
+========================================================= */
+
+function getAvailableSubjects(){
+
+    if(state.exam==="KPSS"){
+
+        return Object.keys(kpss);
+
+    }
+
+    let result=[];
+
+    state.classes.forEach(cls=>{
+
+        if(curriculum[cls]){
+
+            Object.keys(curriculum[cls])
+                .forEach(subject=>{
+
+                    if(!result.includes(subject)){
+
+                        result.push(subject);
+
+                    }
+
+                });
+
+        }
+
+    });
+
+    if(state.field && fields[state.field]){
+
+        const fieldSubjects =
+            fields[state.field];
+
+        result = result.filter(s=>
+            fieldSubjects.includes(s)
+        );
+
+    }
+
+    return result;
+
+}
+
+
+function renderSubjects(){
+
+    const container =
+        document.getElementById("subjects");
+
+    const available =
+        getAvailableSubjects();
+
+    state.subjects =
+        state.subjects.filter(
+            s=>available.includes(s)
+        );
+
+    container.innerHTML="";
+
+    available.forEach(subject=>{
+
+        const button =
+            document.createElement("button");
+
+        button.className="option";
+
+        button.textContent=subject;
+
+        button.onclick=()=>{
+
+            if(state.subjects.includes(subject)){
+
+                state.subjects =
+                    state.subjects.filter(
+                        x=>x!==subject
+                    );
+
+            }else{
+
+                state.subjects.push(subject);
+
+            }
+
+            renderSubjects();
+
+            saveState();
+
+        };
+
+        if(state.subjects.includes(subject)){
+
+            button.classList.add("selected");
+
+        }
+
+        container.appendChild(button);
+
+    });
+
+}
+
+
+function selectAllSubjects(){
+
+    const available =
+        getAvailableSubjects();
+
+    const allSelected =
+        available.length>0 &&
+        available.every(
+            s=>state.subjects.includes(s)
+        );
+
+    if(allSelected){
+
+        state.subjects=[];
+
+    }else{
+
+        state.subjects=[...available];
+
+    }
+
+    renderSubjects();
+
+    saveState();
+
+}
+
+
+/* =========================================================
+   GÜNLER
+========================================================= */
+
+function renderDays(){
+
+    const container =
+        document.getElementById("days");
+
+    container.innerHTML="";
+
+    dayNames.forEach((name,index)=>{
+
+        const button =
+            document.createElement("button");
+
+        button.className="day";
+
+        button.textContent=name;
+
+        button.onclick=()=>{
+
+            if(state.days.includes(index)){
+
+                state.days =
+                    state.days.filter(x=>x!==index);
+
+            }else{
+
+                state.days.push(index);
+
+                state.days.sort(
+                    (a,b)=>a-b
+                );
+
+            }
+
+            renderDays();
+
+            saveState();
+
+        };
+
+        if(state.days.includes(index)){
+
+            button.classList.add("selected");
+
+        }
+
+        container.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================================================
+   KONU LİSTESİ
+========================================================= */
+
+function getTopicsForSubject(subject){
+
+    let topics=[];
+
+    if(state.exam==="KPSS"){
+
+        return kpss[subject] || [];
+
+    }
+
+    state.classes.forEach(cls=>{
+
+        if(
+            curriculum[cls] &&
+            curriculum[cls][subject]
+        ){
+
+            curriculum[cls][subject]
+                .forEach(topic=>{
+
+                    if(!topics.includes(topic)){
+
+                        topics.push(topic);
+
+                    }
+
+                });
+
+        }
+
+    });
+
+    return topics;
+
+}
+
+
+/* =========================================================
+   PROGRAM OLUŞTURMA
+========================================================= */
+
+function createProgram(){
+
+    if(!state.subjects.length){
+
+        alert("En az bir ders seçmelisin.");
+
+        return;
+
+    }
+
+    if(!state.days.length){
+
+        alert("En az bir çalışma günü seçmelisin.");
+
+        return;
+
+    }
+
+
+    state.program=[];
+
+    state.week++;
+
+
+    const subjects =
+        [...state.subjects];
+
+
+    /*
+       Her dersin kendi konu sırası.
+    */
+
+    const indexes={};
+
+
+    subjects.forEach(subject=>{
+
+        indexes[subject]=0;
+
+    });
+
+
+    /*
+       HER ÇALIŞMA GÜNÜNDE HER DERSTEN
+       SADECE 1 NORMAL KONU OLUŞTURULUR.
+    */
+
+    state.days.forEach(day=>{
+
+        subjects.forEach(subject=>{
+
+            const topics =
+                getTopicsForSubject(subject);
+
+            if(!topics.length){
+                return;
+            }
+
+            const topicIndex =
+                indexes[subject];
+
+            if(topicIndex >= topics.length){
+                return;
+            }
+
+            const topic =
+                topics[topicIndex];
+
+            indexes[subject]++;
+
+
+            state.program.push({
+
+                id:
+                    Date.now() +
+                    "-" +
+                    day +
+                    "-" +
+                    subject +
+                    "-" +
+                    Math.random(),
+
+                day:day,
+
+                subject:subject,
+
+                topic:topic,
+
+                completed:false,
+
+                status:"pending",
+
+                test:null,
+
+                score:null,
+
+                correct:null,
+
+                wrong:null,
+
+                empty:null,
+
+                createdWeek:state.week
+
+            });
+
+        });
+
+    });
+
+
+    state.created=true;
+
+    saveState();
+
+    updateAll();
+
+    showPage("weekly");
+
+    alert("✅ Haftalık program oluşturuldu!");
+
+}
+
+
+/* =========================================================
+   SONRAKİ ÇALIŞMA GÜNÜ
+========================================================= */
+
+function getNextStudyDayAfter(currentDay){
+
+    const sortedDays =
+        [...state.days].sort(
+            (a,b)=>a-b
+        );
+
+
+    if(!sortedDays.length){
+
+        return null;
+
+    }
+
+
+    const index =
+        sortedDays.indexOf(currentDay);
+
+
+    if(index===-1){
+
+        return sortedDays[0];
+
+    }
+
+
+    /*
+       Aynı haftada sonraki çalışma günü.
+    */
+
+    if(index < sortedDays.length-1){
+
+        return sortedDays[index+1];
+
+    }
+
+
+    /*
+       Haftanın son çalışma günüyse
+       sonraki haftanın ilk çalışma günü.
+    */
+
+    return sortedDays[0];
+
+}
+
+
+/* =========================================================
+   AYNI DERSTEN GÜNDEKİ ÇAKIŞMAYI BUL
+========================================================= */
+
+function findSubjectItem(
+    subject,
+    day,
+    ignoreId=null
+){
+
+    return state.program.find(item =>
+
+        item.subject === subject &&
+
+        item.day === day &&
+
+        String(item.id) !== String(ignoreId)
+
+    );
+
+}
+
+
+/* =========================================================
+   KONUYU İLERİ KAYDIR
+========================================================= */
+
+/*
+   Bu fonksiyon sistemin en önemli kısmıdır.
+
+   Örnek:
+
+   Salı:
+   Matematik → Nicelikler
+
+   Başarısız konu Salı'ya gelecekse:
+
+   Nicelikler → Çarşamba
+
+   Eğer Çarşamba da doluysa:
+
+   Çarşamba konusu → Perşembe
+
+   Böylece zincirleme kaydırma yapılır.
+*/
+
+function moveTopicForward(
+    item,
+    newDay,
+    visited=[]
+){
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    /*
+       Sonsuz döngüyü önle.
+    */
+
+    if(visited.includes(String(item.id))){
+
+        return;
+
+    }
+
+    visited.push(String(item.id));
+
+
+    /*
+       Yeni günde aynı ders var mı?
+    */
+
+    const conflict =
+        findSubjectItem(
+            item.subject,
+            newDay,
+            item.id
+        );
+
+
+    /*
+       Çakışan konu varsa
+       onu da ileri kaydır.
+    */
+
+    if(conflict){
+
+        const nextDay =
+            getNextStudyDayAfter(newDay);
+
+
+        if(nextDay !== null){
+
+            moveTopicForward(
+                conflict,
+                nextDay,
+                visited
+            );
+
+        }
+
+    }
+
+
+    /*
+       Asıl konuyu yeni güne taşı.
+    */
+
+    item.day=newDay;
+
+}
+
+
+/* =========================================================
+   TEKRAR KONUSU EKLE
+========================================================= */
+
+function addRetryTopic(
+    item,
+    status
+){
+
+    const already =
+        state.program.some(
+            p =>
+                String(p.retryOf) ===
+                String(item.id)
+        );
+
+
+    if(already){
+
+        return;
+
+    }
+
+
+    const nextDay =
+        getNextStudyDayAfter(item.day);
+
+
+    if(nextDay===null){
+
+        return;
+
+    }
+
+
+    /*
+       ÖNCE yeni günde aynı dersin
+       başka konusu var mı kontrol et.
+    */
+
+    const conflict =
+        findSubjectItem(
+            item.subject,
+            nextDay,
+            item.id
+        );
+
+
+    /*
+       Varsa o konuyu ileri kaydır.
+    */
+
+    if(conflict){
+
+        const conflictNextDay =
+            getNextStudyDayAfter(nextDay);
+
+
+        if(conflictNextDay!==null){
+
+            moveTopicForward(
+                conflict,
+                conflictNextDay,
+                []
+            );
+
+        }
+
+    }
+
+
+    /*
+       Şimdi başarısız/tekrar konusunu
+       boşalan güne ekle.
+    */
+
+    state.program.push({
+
+        id:
+            Date.now() +
+            "-" +
+            status +
+            "-" +
+            Math.random(),
+
+        day:nextDay,
+
+        subject:item.subject,
+
+        topic:item.topic,
+
+        completed:false,
+
+        status:status,
+
+        retryOf:item.id,
+
+        test:null,
+
+        score:null,
+
+        correct:null,
+
+        wrong:null,
+
+        empty:null,
+
+        createdWeek:state.week
+
+    });
+
+}
+
+
+/* =========================================================
+   BAŞARISIZ KONU
+========================================================= */
+
+function scheduleRetry(item){
+
+    addRetryTopic(
+        item,
+        "retry"
+    );
+
+}
+
+
+/* =========================================================
+   ORTA SONUÇ
+========================================================= */
+
+function scheduleReview(item){
+
+    addRetryTopic(
+        item,
+        "review"
+    );
+
+}
+
+
+/* =========================================================
+   TEST SONUCU
+========================================================= */
+
+function submitTest(id){
+
+    const item =
+        state.program.find(
+            p=>String(p.id)===String(id)
+        );
+
+
+    if(!item){
+
+        alert("Ders bulunamadı.");
+
+        return;
+
+    }
+
+
+    const correctInput =
+        document.getElementById(
+            "correct-"+id
+        );
+
+    const wrongInput =
+        document.getElementById(
+            "wrong-"+id
+        );
+
+    const emptyInput =
+        document.getElementById(
+            "empty-"+id
+        );
+
+
+    if(
+        !correctInput ||
+        !wrongInput ||
+        !emptyInput
+    ){
+
+        return;
+
+    }
+
+
+    const correct =
+        Number(correctInput.value)||0;
+
+    const wrong =
+        Number(wrongInput.value)||0;
+
+    const empty =
+        Number(emptyInput.value)||0;
+
+
+    const total =
+        correct+
+        wrong+
+        empty;
+
+
+    if(total<=0){
+
+        alert(
+            "En az bir soru sonucu gir."
+        );
+
+        return;
+
+    }
+
+
+    const score =
+        Math.round(
+            correct/total*100
+        );
+
+
+    item.test=true;
+
+    item.correct=correct;
+
+    item.wrong=wrong;
+
+    item.empty=empty;
+
+    item.score=score;
+
+
+    /*
+       %60 altı
+       BAŞARISIZ
+    */
+
+    if(score<60){
+
+        item.status="failed";
+
+        item.completed=false;
+
+        scheduleRetry(item);
+
+    }
+
+    /*
+       %60-69
+       TEKRAR
+    */
+
+    else if(score<70){
+
+        item.status="review";
+
+        item.completed=false;
+
+        scheduleReview(item);
+
+    }
+
+    /*
+       %70+
+       BAŞARILI
+    */
+
+    else{
+
+        item.status="completed";
+
+        item.completed=true;
+
+        state.xp+=20;
+
+        state.completedTopics++;
+
+        updateSubjectProgress(
+            item.subject,
+            item.topic
+        );
+
+    }
+
+
+    /*
+       Test kaydı
+    */
+
+    state.tests.push({
+
+        id:
+            Date.now()+
+            Math.random(),
+
+        subject:item.subject,
+
+        topic:item.topic,
+
+        score:score,
+
+        correct:correct,
+
+        wrong:wrong,
+
+        empty:empty,
+
+        date:new Date().toISOString()
+
+    });
+
+
+    updateStreak();
+
+    saveState();
+
+    updateAll();
+
+
+    if(score<60){
+
+        alert(
+            "❌ %"+score+
+            " — Başarısız. " +
+            "Konu sonraki çalışma gününe taşındı."
+        );
+
+    }
+
+    else if(score<70){
+
+        alert(
+            "🟡 %"+score+
+            " — Konu tekrar programına alındı."
+        );
+
+    }
+
+    else{
+
+        alert(
+            "✅ %"+score+
+            " — Konu başarıyla tamamlandı!"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GÖREV TAMAMLAMA
+========================================================= */
+
+function toggleTask(id){
+
+    const item =
+        state.program.find(
+            p=>String(p.id)===String(id)
+        );
+
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    /*
+       Test sonucu %70+ ise tamamlandı kabul edilir.
+    */
+
+    if(item.test && item.score>=70){
+
+        item.completed=true;
+
+    }else{
+
+        item.completed=
+            !item.completed;
+
+    }
+
+
+    if(item.completed){
+
+        state.xp+=5;
+
+    }
+
+
+    saveState();
+
+    updateAll();
+
+}
+
+
+/* =========================================================
+   DERS İLERLEMESİ
+========================================================= */
+
+function updateSubjectProgress(
+    subject,
+    topic
+){
+
+    if(!state.subjectProgress[subject]){
+
+        state.subjectProgress[subject]=[];
+
+    }
+
+
+    if(
+        !state.subjectProgress[subject]
+            .includes(topic)
+    ){
+
+        state.subjectProgress[subject]
+            .push(topic);
+
+    }
+
+}
+
+
+/* =========================================================
+   SERİ
+========================================================= */
+
+function updateStreak(){
+
+    const today =
+        new Date()
+            .toISOString()
+            .slice(0,10);
+
+
+    if(state.lastActivityDate===today){
+
+        return;
+
+    }
+
+
+    if(!state.lastActivityDate){
+
+        state.streak=1;
+
+    }else{
+
+        const previous =
+            new Date(
+                state.lastActivityDate
+            );
+
+        const current =
+            new Date(today);
+
+
+        const difference =
+            Math.round(
+                (current-previous)/
+                86400000
+            );
+
+
+        if(difference===1){
+
+            state.streak++;
+
+        }else{
+
+            state.streak=1;
+
+        }
+
+    }
+
+
+    state.lastActivityDate=today;
+
+}
+
+
+/* =========================================================
+   BUGÜNÜN İNDEKSİ
+========================================================= */
+
+function getTodayIndex(){
+
+    const jsDay =
+        new Date().getDay();
+
+    return jsDay===0
+        ? 6
+        : jsDay-1;
+
+}
+
+
+/* =========================================================
+   PROGRAM HTML
+========================================================= */
+
+function programHTML(item){
+
+    let statusText="Bekliyor";
+
+
+    if(item.status==="completed"){
+
+        statusText="✅ Başarılı";
+
+    }
+
+    else if(item.status==="failed"){
+
+        statusText="❌ Başarısız";
+
+    }
+
+    else if(item.status==="retry"){
+
+        statusText="🔁 Tekrar";
+
+    }
+
+    else if(item.status==="review"){
+
+        statusText="🟡 Tekrar Gerekli";
+
+    }
+
+
+    let cls="program";
+
+
+    if(item.status==="completed"){
+
+        cls+=" completed-topic";
+
+    }
+
+    else if(item.status==="failed"){
+
+        cls+=" failed-topic";
+
+    }
+
+    else if(
+        item.status==="retry" ||
+        item.status==="review"
+    ){
+
+        cls+=" review-topic";
+
+    }
+
+
+    return `
+
+    <div class="${cls}">
+
+        <div class="program-head">
+
+            <div>
+
+                <div class="program-title">
+                    ${escapeHTML(item.subject)}
+                </div>
+
+                <div class="topic">
+                    📖 ${escapeHTML(item.topic)}
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <span class="tag">
+                    ${statusText}
+                </span>
+
+                ${
+                    item.score!==null
+                    ?
+                    `<span class="tag">
+                        ${item.score}%
+                    </span>`
+                    :
+                    ""
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="task">
+
+            <div class="task-row">
+
+                <input
+                    type="checkbox"
+                    ${item.completed ? "checked":""}
+                    onchange="toggleTask('${item.id}')"
+                >
+
+                <div>
+
+                    <div class="task-title">
+                        ${
+                            item.completed
+                            ?
+                            "Konu tamamlandı"
+                            :
+                            "Konuyu çalış"
+                        }
+                    </div>
+
+                    <div class="task-info">
+                        Konuyu çalış ve ardından
+                        çözdüğün testin doğru,
+                        yanlış ve boş sayılarını gir.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        ${
+            item.status==="failed"
+            ?
+            `
+            <div class="notice bad">
+                ❌ Bu konuda başarı oranı %60'ın altında.
+                Aynı konu sonraki çalışma gününe tekrar eklendi.
+                Aynı dersin diğer konusu da otomatik olarak
+                sonraki güne kaydırıldı.
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            item.status==="retry"
+            ?
+            `
+            <div class="notice medium">
+                🔁 Bu konu önceki çalışmada başarısız olduğu
+                için tekrar getirildi.
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            item.status==="review"
+            ?
+            `
+            <div class="notice medium">
+                🟡 Bu konuda %60-%69 arası sonuç aldın.
+                Konu tekrar programına alındı.
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            item.test
+            ?
+            `
+            <div class="analysis
+                ${
+                    item.score>=70
+                    ?"good"
+                    :
+                    item.score>=60
+                    ?"medium"
+                    :"bad"
+                }">
+
+                <strong>
+                    Test Sonucu: %${item.score}
+                </strong>
+
+                <br>
+
+                Doğru: ${item.correct}
+                |
+                Yanlış: ${item.wrong}
+                |
+                Boş: ${item.empty}
+
+            </div>
+            `
+            :
+            `
+            <div class="test-box">
+
+                <strong>
+                    📝 Test Sonucu
+                </strong>
+
+                <div class="task-info">
+                    Kaç soru çözdüğünü ayrıca girmene gerek yok.
+                    Doğru + yanlış + boş toplamı otomatik olarak
+                    soru sayını oluşturur.
+                </div>
+
+                <div class="test-inputs">
+
+                    <input
+                        type="number"
+                        min="0"
+                        id="correct-${item.id}"
+                        placeholder="Doğru"
+                    >
+
+                    <input
+                        type="number"
+                        min="0"
+                        id="wrong-${item.id}"
+                        placeholder="Yanlış"
+                    >
+
+                    <input
+                        type="number"
+                        min="0"
+                        id="empty-${item.id}"
+                        placeholder="Boş"
+                    >
+
+                </div>
+
+                <button
+                    class="test-btn"
+                    onclick="submitTest('${item.id}')">
+
+                    Testi Kaydet
+
+                </button>
+
+            </div>
+            `
+        }
+
+    </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   GÜNLÜK
+========================================================= */
+
+function renderDaily(){
+
+    const container =
+        document.getElementById(
+            "dailyContent"
+        );
+
+
+    const today =
+        getTodayIndex();
+
+
+    const list =
+        state.program.filter(
+            p=>p.day===today
+        );
+
+
+    if(!list.length){
+
+        container.innerHTML=`
+            <div class="empty">
+                Bugün için program bulunmuyor.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        list.map(programHTML).join("");
+
+}
+
+
+/* =========================================================
+   ANA SAYFA BUGÜN
+========================================================= */
+
+function renderHomeToday(){
+
+    const container =
+        document.getElementById(
+            "homeToday"
+        );
+
+
+    const today =
+        getTodayIndex();
+
+
+    const list =
+        state.program.filter(
+            p=>p.day===today
+        );
+
+
+    if(!list.length){
+
+        container.innerHTML=`
+            <div class="empty">
+                Bugün programın yok.
+                <br><br>
+                Dersler bölümünden program oluşturabilirsin.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        list.map(programHTML).join("");
+
+}
+
+
+/* =========================================================
+   HAFTALIK
+========================================================= */
+
+function renderWeekly(){
+
+    const container =
+        document.getElementById(
+            "weeklyContent"
+        );
+
+
+    document.getElementById(
+        "weekBadge"
+    ).textContent=
+        "Hafta "+state.week;
+
+
+    if(!state.program.length){
+
+        container.innerHTML=`
+            <div class="empty">
+                Henüz program oluşturulmadı.
+            </div>
+        `;
+
+
+        document.getElementById(
+            "weekStatus"
+        ).innerHTML=`
+            <strong>📚 Henüz program yok.</strong>
+            <br>
+            Dersler bölümünden haftalık programını oluştur.
+        `;
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "weekStatus"
+    ).innerHTML=`
+        <strong>🚀 Akıllı programın hazır!</strong>
+        <br>
+        Başarısız olduğun bir konu sonraki çalışma gününe
+        taşınır ve aynı dersin diğer konusu otomatik olarak
+        bir sonraki güne kaydırılır.
+    `;
+
+
+    let html="";
+
+
+    for(let day=0;day<7;day++){
+
+        const list =
+            state.program.filter(
+                p=>p.day===day
+            );
+
+
+        if(!list.length) continue;
+
+
+        html+=`
+
+        <div class="card"
+             style="background:#f8f9fc">
+
+            <h3>
+                ${dayNames[day]}
+            </h3>
+
+            ${list.map(programHTML).join("")}
+
+        </div>
+
+        `;
+
+    }
+
+
+    container.innerHTML=html;
+
+}
+
+
+/* =========================================================
+   İLERLEME
+========================================================= */
+
+function renderProgress(){
+
+    const total =
+        state.program.length;
+
+
+    const completed =
+        state.program.filter(
+            p=>p.completed
+        ).length;
+
+
+    const percentage =
+        total
+        ?
+        Math.round(
+            completed/total*100
+        )
+        :
+        0;
+
+
+    document.getElementById(
+        "progressXP"
+    ).textContent=state.xp;
+
+
+    document.getElementById(
+        "progressTopics"
+    ).textContent=
+        state.completedTopics;
+
+
+    document.getElementById(
+        "progressTests"
+    ).textContent=
+        state.tests.length;
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width=
+        percentage+"%";
+
+
+    document.getElementById(
+        "progressText"
+    ).textContent=
+        "%"+percentage;
+
+
+    const container =
+        document.getElementById(
+            "subjectProgress"
+        );
+
+
+    const subjects =
+        state.subjects;
+
+
+    if(!subjects.length){
+
+        container.innerHTML=`
+            <div class="empty">
+                Henüz ders seçilmedi.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    let html="";
+
+
+    subjects.forEach(subject=>{
+
+        const topics =
+            getTopicsForSubject(subject);
+
+
+        const done =
+            (
+                state.subjectProgress[subject] || []
+            ).length;
+
+
+        const percent =
+            topics.length
+            ?
+            Math.min(
+                100,
+                Math.round(
+                    done/topics.length*100
+                )
+            )
+            :
+            0;
+
+
+        html+=`
+
+        <div class="task">
+
+            <strong>
+                ${escapeHTML(subject)}
+            </strong>
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-fill"
+                    style="width:${percent}%">
+                </div>
+
+            </div>
+
+            <div class="task-info">
+                ${done}/${topics.length} konu
+                — %${percent}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+
+    container.innerHTML=html;
+
+}
+
+
+/* =========================================================
+   ANA SAYFA
+========================================================= */
+
+function renderHome(){
+
+    document.getElementById(
+        "homeXP"
+    ).textContent=state.xp;
+
+
+    document.getElementById(
+        "homeStreak"
+    ).textContent=state.streak;
+
+
+    document.getElementById(
+        "homeWeek"
+    ).textContent=state.week;
+
+
+    document.getElementById(
+        "homeTopics"
+    ).textContent=
+        state.completedTopics;
+
+
+    renderHomeToday();
+
+
+    const analysis =
+        document.getElementById(
+            "homeAnalysis"
+        );
+
+
+    if(!state.tests.length){
+
+        analysis.innerHTML=
+            "Henüz yeterli test sonucu yok.";
+
+        return;
+
+    }
+
+
+    const average =
+        Math.round(
+            state.tests.reduce(
+                (sum,t)=>sum+t.score,
+                0
+            )
+            /
+            state.tests.length
+        );
+
+
+    let message="";
+
+
+    if(average>=70){
+
+        message=`
+            <div class="analysis good">
+                🟢 Ortalama başarın %${average}.
+                Gayet iyi gidiyorsun!
+            </div>
+        `;
+
+    }
+
+    else if(average>=60){
+
+        message=`
+            <div class="analysis medium">
+                🟡 Ortalama başarın %${average}.
+                Tekrar edilmesi gereken konular var.
+            </div>
+        `;
+
+    }
+
+    else{
+
+        message=`
+            <div class="analysis bad">
+                🔴 Ortalama başarın %${average}.
+                Sistem zayıf konularını otomatik olarak
+                tekrar programına taşıyor.
+            </div>
+        `;
+
+    }
+
+
+    analysis.innerHTML=message;
+
+}
+
+
+/* =========================================================
+   SIRALAMA
+========================================================= */
+
+function renderRanking(){
+
+    const container =
+        document.getElementById(
+            "rankingContent"
+        );
+
+
+    const users =
+        JSON.parse(
+            localStorage.getItem(
+                "dersplan_users"
+            ) || "{}"
+        );
+
+
+    const ranking=[];
+
+
+    Object.keys(users).forEach(username=>{
+
+        const saved =
+            localStorage.getItem(
+                "dersplan_user_"+username
+            );
+
+
+        let userState=defaultState();
+
+
+        if(saved){
+
+            try{
+
+                userState={
+                    ...userState,
+                    ...JSON.parse(saved)
+                };
+
+            }catch(e){}
+
+        }
+
+
+        ranking.push({
+
+            username:username,
+
+            name:users[username].name,
+
+            xp:userState.xp || 0
+
+        });
+
+    });
+
+
+    ranking.sort(
+        (a,b)=>b.xp-a.xp
+    );
+
+
+    if(!ranking.length){
+
+        container.innerHTML=
+            "Henüz kullanıcı yok.";
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        ranking.map(
+            (user,index)=>`
+
+            <div class="task">
+
+                <strong>
+                    ${index+1}. ${escapeHTML(user.name)}
+                </strong>
+
+                <div class="task-info">
+                    ⭐ ${user.xp} XP
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* =========================================================
+   SEÇİMLER
+========================================================= */
+
+function updateSelections(){
+
+    document
+        .querySelectorAll(".option")
+        .forEach(el=>{
+            el.classList.remove("selected");
+        });
+
+
+    const examId =
+        state.exam==="YKS+KPSS"
+        ?
+        "exam-BOTH"
+        :
+        "exam-"+state.exam;
+
+
+    const examButton =
+        document.getElementById(examId);
+
+
+    if(examButton){
+
+        examButton.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    const fieldButton =
+        document.getElementById(
+            "field-"+state.field
+        );
+
+
+    if(
+        fieldButton &&
+        state.exam!=="KPSS"
+    ){
+
+        fieldButton.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    state.classes.forEach(cls=>{
+
+        const button =
+            document.getElementById(
+                "class-"+cls
+            );
+
+
+        if(button){
+
+            button.classList.add(
+                "selected"
+            );
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   TÜM UI
+========================================================= */
+
+function updateAll(){
+
+    renderHome();
+
+    renderDaily();
+
+    renderWeekly();
+
+    renderProgress();
+
+    renderRanking();
+
+    updateSelections();
+
+}
+
+
+/* =========================================================
+   BAŞLANGIÇ
+========================================================= */
+
+function initializeUI(){
+
+    if(state.exam==="KPSS"){
+
+        document.getElementById(
+            "fieldCard"
+        ).style.display="none";
+
+    }else{
+
+        document.getElementById(
+            "fieldCard"
+        ).style.display="block";
+
+    }
+
+
+    renderClasses();
+
+    renderSubjects();
+
+    renderDays();
+
+    updateSelections();
+
+}
+
+
+/* =========================================================
+   PROGRAMI SİL
+========================================================= */
+
+function deleteProgramAndReset(){
+
+    const confirmDelete =
+        confirm(
+            "Programı ve ilerleme verilerini sıfırlamak istediğine emin misin?"
+        );
+
+
+    if(!confirmDelete){
+
+        return;
+
+    }
+
+
+    state.program=[];
+
+    state.xp=0;
+
+    state.streak=0;
+
+    state.week=0;
+
+    state.completedTopics=0;
+
+    state.tests=[];
+
+    state.created=false;
+
+    state.lastStudyDate=null;
+
+    state.lastActivityDate=null;
+
+    state.topicProgress={};
+
+    state.subjectProgress={};
+
+
+    saveState();
+
+    updateAll();
+
+
+    alert(
+        "Program ve ilerleme sıfırlandı."
+    );
+
+}
+
+
+/* =========================================================
+   HTML GÜVENLİĞİ
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================================
+   SAYFA AÇILIŞI
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    ()=>{
+
+        showRegister();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
